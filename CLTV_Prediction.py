@@ -53,12 +53,15 @@ df = df_.copy()
 # Task 1: Data Prepration
 #*****************************
 
+# A function is used for missing value analysis
 def analyze_missing_values(df):
     na_cols = df.columns[df.isna().any()].tolist()
     total_missing = df[na_cols].isna().sum().sort_values(ascending=False)
     percentage_missing = ((df[na_cols].isna().sum() / df.shape[0]) * 100).sort_values(ascending=False)
     missing_data = pd.DataFrame({'Missing Count': total_missing, 'Percentage (%)': np.round(percentage_missing, 2)})
     return missing_data
+
+
 
 
 # to get an initial understanding of the data's structure, its content, and if there are any missing values that need to be addressed.
@@ -182,8 +185,8 @@ cltv = ggf.customer_lifetime_value(bgf,
                                        cltv_df['recency_cltv_weekly'],
                                        cltv_df['T_weekly'],
                                        cltv_df['monetary_cltv_avg'],
-                                       time=6,  # 6 aylık
-                                       freq="W",  # T'nin frekans bilgisi.
+                                       time=6,
+                                       freq="W",
                                        discount_rate=0.01)
 
 cltv_df["cltv"] = cltv
@@ -195,13 +198,9 @@ cltv_df.sort_values("cltv",ascending=False)[:10]
 
 cltv_df["cltv_segment"] = pd.qcut(cltv_df["cltv"], 4, labels=["D", "C", "B", "A"])
 
-cltv_df.head(3)
-#                             customer_id  recency_cltv_weekly  T_weekly  frequency  monetary_cltv_avg  exp_sales_3_month  exp_sales_6_month  exp_average_profit      cltv cltv_segment
-# 0  cc294636-19f0-11eb-8d74-000d3a38a36f             17.00000  30.71429    5.00000          187.87400            0.83886            1.67772           193.60204 340.79797            A
-# 1  f431bd5a-ab7b-11e9-a2fc-000d3a38a36f            209.85714 225.00000   10.00000          138.09700            0.52953            1.05907           140.28486 155.88455            B
-# 2  69b69676-1a40-11ea-941b-000d3a38a36f             52.28571  79.00000    5.00000          117.06400            0.62216            1.24431           120.94931 157.90656            B
 
 cltv_df.groupby("cltv_segment").agg({"count","mean","sum"})
+
 #              recency_cltv_weekly                     T_weekly                    frequency                   monetary_cltv_avg                     exp_sales_3_month                  exp_sales_6_month                  exp_average_profit                          cltv
 #                             mean count          sum      mean count          sum      mean count         sum              mean count           sum              mean count        sum              mean count        sum               mean count           sum      mean count           sum
 # cltv_segment
